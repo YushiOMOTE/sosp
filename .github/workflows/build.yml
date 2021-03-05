@@ -1,0 +1,25 @@
+name: build
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install nightly
+        uses: actions-rs/toolchain@v1
+        with:
+          components: rust-src,llvm-tools-preview
+      - name: Install cargo-bootimage
+        uses: actions-rs/cargo@v1
+        with:
+          command: install
+          args: bootimage
+      - name: Install qemu
+        run: sudo apt install qemu
+      - name: Build
+        run: cargo build
+      - name: Test
+        run: cargo test
