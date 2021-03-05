@@ -9,12 +9,12 @@ use log::*;
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-    com_logger::init();
-    info!("Starting...");
+    sosp::init();
 
     #[cfg(test)]
     test_main();
 
+    info!("Stopped");
     loop {}
 }
 

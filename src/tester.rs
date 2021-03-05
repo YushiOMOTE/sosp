@@ -4,14 +4,14 @@ use log::*;
 #[cfg(test)]
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-    com_logger::init();
+    crate::init();
     crate::test_main();
     loop {}
 }
 
 pub fn test_panic(info: &PanicInfo) -> ! {
     error!("{}", info);
-    exit_qemu(QemuExitCode::Failed);
+    exit_qemu_failed();
     loop {}
 }
 
@@ -26,7 +26,7 @@ pub fn test_runner(tests: &[&dyn Testable]) {
     for test in tests {
         test.run();
     }
-    exit_qemu(QemuExitCode::Success);
+    exit_qemu_success();
 }
 
 pub trait Testable {
@@ -58,12 +58,21 @@ pub fn exit_qemu(exit_code: QemuExitCode) {
     }
 }
 
+pub fn exit_qemu_success() {
+    exit_qemu(QemuExitCode::Success)
+}
+
+pub fn exit_qemu_failed() {
+    exit_qemu(QemuExitCode::Failed)
+}
+
 #[macro_export]
 macro_rules! test_harness {
     () => {
         #[no_mangle]
         pub extern "C" fn _start() -> ! {
             com_logger::init();
+            sosp::interrupts::init_idt();
             test_main();
             loop {}
         }
