@@ -2,8 +2,13 @@ use core::panic::PanicInfo;
 use log::*;
 
 #[cfg(test)]
-#[no_mangle]
-pub extern "C" fn _start() -> ! {
+use bootloader::{entry_point, BootInfo};
+
+#[cfg(test)]
+entry_point!(test_main);
+
+#[cfg(test)]
+pub fn test_main(_boot_info: &BootInfo) -> ! {
     crate::init();
     crate::test_main();
     loop {}

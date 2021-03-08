@@ -4,18 +4,30 @@
 #![test_runner(sosp::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+extern crate alloc;
+
+use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
 use log::*;
+use x86_64::VirtAddr;
 
-#[no_mangle]
-pub extern "C" fn _start() -> ! {
+entry_point!(main);
+
+pub fn main(boot_info: &'static BootInfo) -> ! {
     sosp::init();
 
     #[cfg(test)]
     test_main();
 
-    info!("Stopped");
-    loop {}
+    let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
+    let mut mapper = unsafe { sosp::memory::init_memory(phys_mem_offset) };
+    let mut frame_allocator =
+        unsafe { sosp::memory::BootInfoFrameAllocator::init(&boot_info.memory_map) };
+
+    sosp::allocator::init_heap(&mut mapper, &mut frame_allocator)
+        .expect("heap initialization failed");
+
+    sosp::hlt_loop();
 }
 
 #[cfg(not(test))]
