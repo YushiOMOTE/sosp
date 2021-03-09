@@ -52,3 +52,17 @@ pub unsafe fn active_level_4_table(physical_memory_offset: VirtAddr) -> &'static
 
     &mut *page_table_ptr // unsafe
 }
+
+pub fn phys_to_virt(
+    physical_memory_offset: VirtAddr,
+    physical_memory_address: PhysAddr,
+) -> VirtAddr {
+    physical_memory_offset + physical_memory_address.as_u64()
+}
+
+pub unsafe fn phys_to_virt_as_ptr<T>(
+    physical_memory_offset: VirtAddr,
+    physical_memory_address: PhysAddr,
+) -> *mut T {
+    phys_to_virt(physical_memory_offset, physical_memory_address).as_mut_ptr()
+}

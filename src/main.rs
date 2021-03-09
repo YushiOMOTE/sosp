@@ -27,6 +27,8 @@ pub fn main(boot_info: &'static BootInfo) -> ! {
     sosp::allocator::init_heap(&mut mapper, &mut frame_allocator)
         .expect("heap initialization failed");
 
+    sosp::acpi::init_acpi(VirtAddr::new(boot_info.physical_memory_offset));
+
     sosp::hlt_loop();
 }
 

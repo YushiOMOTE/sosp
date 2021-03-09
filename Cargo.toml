@@ -5,6 +5,8 @@ authors = ["YushiOMOTE <yushiomote@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+acpi = "2.2.0"
+apic = { git = "https://github.com/rust-osdev/apic.git" }
 bootloader = { version = "0.9.14", features = ["map_physical_memory"] }
 com_logger = "0.1.0"
 lazy_static = { version = "1.4.0", features = ["spin_no_std"], default-features = false }

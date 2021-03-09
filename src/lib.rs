@@ -13,6 +13,7 @@ pub mod interrupts;
 pub mod memory;
 pub mod tester;
 pub use crate::tester::{test_panic, test_runner};
+pub mod acpi;
 pub mod allocator;
 use log::*;
 
